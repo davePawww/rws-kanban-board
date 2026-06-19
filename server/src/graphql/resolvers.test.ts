@@ -33,6 +33,27 @@ function mockSelectResult(result: unknown) {
   return { from, chain };
 }
 
+function mockInsertResult(result: unknown) {
+  const returning = vi.fn().mockResolvedValue(result);
+  const values = vi.fn().mockReturnValue({ returning });
+  vi.mocked(db.insert).mockReturnValue({ values } as any);
+  return { values, returning };
+}
+
+function mockUpdateResult(result: unknown) {
+  const returning = vi.fn().mockResolvedValue(result);
+  const where = vi.fn().mockReturnValue({ returning });
+  const set = vi.fn().mockReturnValue({ where });
+  vi.mocked(db.update).mockReturnValue({ set } as any);
+  return { set, where, returning };
+}
+
+function mockDeleteResult() {
+  const where = vi.fn().mockResolvedValue(undefined);
+  vi.mocked(db.delete).mockReturnValue({ where } as any);
+  return { where };
+}
+
 function mockSelectWithWhereThenOrderBy(result: unknown) {
   const chain = {
     where: vi.fn().mockReturnValue({
@@ -144,6 +165,107 @@ describe('Column', () => {
 
       expect(result).toEqual([]);
       expect(chain.where).toHaveBeenCalledOnce();
+    });
+  });
+});
+
+describe('Mutation', () => {
+  describe('createBoard', () => {
+    it('inserts a board with the given title', async () => {
+      const newBoard = { id: 'board-3', title: 'New Board', createdAt: new Date('2026-01-03'), updatedAt: new Date('2026-01-03') };
+      const { values } = mockInsertResult([newBoard]);
+
+      const result = await resolvers.Mutation.createBoard(null, { title: 'New Board' });
+
+      expect(values).toHaveBeenCalledWith({ title: 'New Board' });
+      expect(result).toEqual(newBoard);
+    });
+  });
+
+  describe('createColumn', () => {
+    it('inserts a column with auto-calculated position', async () => {
+      const existingColumns = [
+        { id: 'col-1', boardId: 'board-1', title: 'Todo', position: 0 },
+      ];
+      const newColumn = { id: 'col-3', boardId: 'board-1', title: 'Done', position: 1 };
+      mockSelectResult(existingColumns);
+      const { values } = mockInsertResult([newColumn]);
+
+      const result = await resolvers.Mutation.createColumn(null, { boardId: 'board-1', title: 'Done' });
+
+      expect(values).toHaveBeenCalledWith({ boardId: 'board-1', title: 'Done', position: 1 });
+      expect(result).toEqual(newColumn);
+    });
+
+    it('inserts first column at position 0 when board has no columns', async () => {
+      const newColumn = { id: 'col-1', boardId: 'board-1', title: 'Todo', position: 0 };
+      mockSelectResult([]);
+      const { values } = mockInsertResult([newColumn]);
+
+      const result = await resolvers.Mutation.createColumn(null, { boardId: 'board-1', title: 'Todo' });
+
+      expect(values).toHaveBeenCalledWith({ boardId: 'board-1', title: 'Todo', position: 0 });
+      expect(result).toEqual(newColumn);
+    });
+  });
+
+  describe('createCard', () => {
+    it('inserts a card with auto-calculated position', async () => {
+      const existingCards = [
+        { id: 'card-1', columnId: 'col-1', title: 'Task 1', description: null, position: 0, createdAt: new Date('2026-01-01') },
+      ];
+      const newCard = { id: 'card-3', columnId: 'col-1', title: 'Task 3', description: 'More work', position: 1, createdAt: new Date('2026-01-03') };
+      mockSelectResult(existingCards);
+      const { values } = mockInsertResult([newCard]);
+
+      const result = await resolvers.Mutation.createCard(null, { columnId: 'col-1', title: 'Task 3', description: 'More work' });
+
+      expect(values).toHaveBeenCalledWith({ columnId: 'col-1', title: 'Task 3', description: 'More work', position: 1 });
+      expect(result).toEqual(newCard);
+    });
+
+    it('inserts first card at position 0 when column has no cards', async () => {
+      const newCard = { id: 'card-1', columnId: 'col-1', title: 'First Card', description: null, position: 0, createdAt: new Date('2026-01-01') };
+      mockSelectResult([]);
+      const { values } = mockInsertResult([newCard]);
+
+      const result = await resolvers.Mutation.createCard(null, { columnId: 'col-1', title: 'First Card', description: null });
+
+      expect(values).toHaveBeenCalledWith({ columnId: 'col-1', title: 'First Card', description: null, position: 0 });
+      expect(result).toEqual(newCard);
+    });
+  });
+
+  describe('updateCardPosition', () => {
+    it('updates card column and position', async () => {
+      const updatedCard = { id: 'card-1', columnId: 'col-2', title: 'Task 1', description: 'Do thing', position: 0, createdAt: new Date('2026-01-01') };
+      const { set, where } = mockUpdateResult([updatedCard]);
+
+      const result = await resolvers.Mutation.updateCardPosition(null, { id: 'card-1', columnId: 'col-2', position: 0 });
+
+      expect(set).toHaveBeenCalledWith({ columnId: 'col-2', position: 0 });
+      expect(where).toHaveBeenCalledOnce();
+      expect(result).toEqual(updatedCard);
+    });
+
+    it('returns undefined when card does not exist', async () => {
+      const { set } = mockUpdateResult([]);
+
+      const result = await resolvers.Mutation.updateCardPosition(null, { id: 'nonexistent', columnId: 'col-1', position: 0 });
+
+      expect(set).toHaveBeenCalled();
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe('deleteCard', () => {
+    it('deletes a card and returns true', async () => {
+      const { where } = mockDeleteResult();
+
+      const result = await resolvers.Mutation.deleteCard(null, { id: 'card-1' });
+
+      expect(where).toHaveBeenCalledOnce();
+      expect(result).toBe(true);
     });
   });
 });

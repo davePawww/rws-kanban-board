@@ -35,5 +35,11 @@ export default defineConfig([
       ],
     },
   },
+  {
+    files: ['src/**/*.test.ts'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
+  },
   prettier,
 ]);

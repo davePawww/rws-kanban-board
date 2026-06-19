@@ -1,3 +1,5 @@
+import storybook from 'eslint-plugin-storybook';
+
 import js from '@eslint/js';
 import globals from 'globals';
 import { defineConfig, globalIgnores } from 'eslint/config';
@@ -66,5 +68,6 @@ export default defineConfig([
       ],
     },
   },
+  ...storybook.configs['flat/recommended'],
   eslintConfigPrettier,
 ]);

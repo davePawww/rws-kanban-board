@@ -22,5 +22,5 @@
     "noFallthroughCasesInSwitch": true,
     "paths": { "@/*": ["./src/*"] }
   },
-  "include": ["src", "src/test"]
+  "include": ["src", "src/test", ".storybook/**/*"]
 }

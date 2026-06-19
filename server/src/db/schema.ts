@@ -26,3 +26,7 @@ export const cards = pgTable('cards', {
   position: integer('position').notNull().default(0),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
+
+export type Board = typeof boards.$inferSelect;
+export type Column = typeof columns.$inferSelect;
+export type Card = typeof cards.$inferSelect;

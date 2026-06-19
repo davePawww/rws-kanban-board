@@ -31,4 +31,4 @@ app.get('/health', (req, res) => {
   });
 });
 
-export { app };
+export { app, server };

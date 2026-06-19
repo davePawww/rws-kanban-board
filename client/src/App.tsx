@@ -9,7 +9,7 @@ function App() {
       transition={{ duration: 1, ease: 'easeOut' }}
     >
       <h1 className="text-xl font-bold text-red-500 underline">test</h1>
-      <Button size="sm">test</Button>
+      <Button size="sm">submit</Button>
     </motion.div>
   );
 }

@@ -40,15 +40,18 @@ describe('GraphQL API — Integration', () => {
   describe('boards query', () => {
     it('POST /graphql { boards } returns a list of boards', async () => {
       const mockBoards = [
-        { id: 'board-1', title: 'My Board', createdAt: '2026-01-01T00:00:00.000Z', updatedAt: '2026-01-01T00:00:00.000Z' },
+        {
+          id: 'board-1',
+          title: 'My Board',
+          createdAt: '2026-01-01T00:00:00.000Z',
+          updatedAt: '2026-01-01T00:00:00.000Z',
+        },
       ];
       const orderByChain = vi.fn().mockResolvedValue(mockBoards);
       const fromChain = vi.fn().mockReturnValue({ orderBy: orderByChain });
       vi.mocked(db.select).mockReturnValue({ from: fromChain } as any);
 
-      const res = await request(app)
-        .post('/graphql')
-        .send({ query: '{ boards { id title } }' });
+      const res = await request(app).post('/graphql').send({ query: '{ boards { id title } }' });
 
       expect(res.status).toBe(200);
       expect(res.body.data.boards).toHaveLength(1);
@@ -59,7 +62,8 @@ describe('GraphQL API — Integration', () => {
   describe('createBoard mutation', () => {
     it('POST /graphql { createBoard } creates a board and returns it', async () => {
       const newBoard = {
-        id: 'board-new', title: 'New Board',
+        id: 'board-new',
+        title: 'New Board',
         createdAt: '2026-06-19T00:00:00.000Z',
         updatedAt: '2026-06-19T00:00:00.000Z',
       };
@@ -78,9 +82,7 @@ describe('GraphQL API — Integration', () => {
 
   describe('error handling', () => {
     it('POST /graphql returns errors for invalid queries', async () => {
-      const res = await request(app)
-        .post('/graphql')
-        .send({ query: '{ nonExistentField }' });
+      const res = await request(app).post('/graphql').send({ query: '{ nonExistentField }' });
 
       expect(res.status).toBe(400);
     });

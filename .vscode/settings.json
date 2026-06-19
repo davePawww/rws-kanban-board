@@ -42,12 +42,7 @@
   "eslint.enable": true,
   "eslint.format.enable": false,
   "eslint.useFlatConfig": true,
-  "eslint.validate": [
-    "javascript",
-    "typescript",
-    "javascriptreact",
-    "typescriptreact"
-  ],
+  "eslint.validate": ["javascript", "typescript", "javascriptreact", "typescriptreact"],
   "search.exclude": {
     "**/node_modules": true,
     "**/dist": true,

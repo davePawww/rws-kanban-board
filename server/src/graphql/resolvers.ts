@@ -1,5 +1,5 @@
-import { eq, asc } from "drizzle-orm";
-import { db, boards, columns, cards } from "../db/index.ts";
+import { eq, asc } from 'drizzle-orm';
+import { db, boards, columns, cards } from '../db/index.ts';
 
 type Board = {
   id: string;
@@ -26,8 +26,7 @@ type Card = {
 
 export const resolvers = {
   Query: {
-    boards: async (): Promise<Board[]> =>
-      db.select().from(boards).orderBy(asc(boards.createdAt)),
+    boards: async (): Promise<Board[]> => db.select().from(boards).orderBy(asc(boards.createdAt)),
 
     board: async (_: unknown, { id }: { id: string }): Promise<Board | null> =>
       db
@@ -45,24 +44,15 @@ export const resolvers = {
   },
 
   Mutation: {
-    createBoard: async (
-      _: unknown,
-      { title }: { title: string },
-    ): Promise<Board> =>
+    createBoard: async (_: unknown, { title }: { title: string }): Promise<Board> =>
       db
         .insert(boards)
         .values({ title })
         .returning()
         .then((r) => r[0]),
 
-    createColumn: async (
-      _: unknown,
-      { boardId, title }: { boardId: string; title: string },
-    ): Promise<Column> => {
-      const tally = await db
-        .select()
-        .from(columns)
-        .where(eq(columns.boardId, boardId));
+    createColumn: async (_: unknown, { boardId, title }: { boardId: string; title: string }): Promise<Column> => {
+      const tally = await db.select().from(columns).where(eq(columns.boardId, boardId));
       const position = tally.length;
       return db
         .insert(columns)
@@ -73,16 +63,9 @@ export const resolvers = {
 
     createCard: async (
       _: unknown,
-      {
-        columnId,
-        title,
-        description,
-      }: { columnId: string; title: string; description?: string | null },
+      { columnId, title, description }: { columnId: string; title: string; description?: string | null },
     ): Promise<Card> => {
-      const tally = await db
-        .select()
-        .from(cards)
-        .where(eq(cards.columnId, columnId));
+      const tally = await db.select().from(cards).where(eq(cards.columnId, columnId));
       const position = tally.length;
       return db
         .insert(cards)
@@ -93,11 +76,7 @@ export const resolvers = {
 
     updateCardPosition: async (
       _: unknown,
-      {
-        id,
-        columnId,
-        position,
-      }: { id: string; columnId: string; position: number },
+      { id, columnId, position }: { id: string; columnId: string; position: number },
     ): Promise<Card> =>
       db
         .update(cards)
@@ -106,10 +85,7 @@ export const resolvers = {
         .returning()
         .then((r) => r[0]),
 
-    deleteCard: async (
-      _: unknown,
-      { id }: { id: string },
-    ): Promise<boolean> => {
+    deleteCard: async (_: unknown, { id }: { id: string }): Promise<boolean> => {
       await db.delete(cards).where(eq(cards.id, id));
       return true;
     },
@@ -117,19 +93,11 @@ export const resolvers = {
 
   Board: {
     columns: async (parent: Board): Promise<Column[]> =>
-      db
-        .select()
-        .from(columns)
-        .where(eq(columns.boardId, parent.id))
-        .orderBy(asc(columns.position)),
+      db.select().from(columns).where(eq(columns.boardId, parent.id)).orderBy(asc(columns.position)),
   },
 
   Column: {
     cards: async (parent: Column): Promise<Card[]> =>
-      db
-        .select()
-        .from(cards)
-        .where(eq(cards.columnId, parent.id))
-        .orderBy(asc(cards.position)),
+      db.select().from(cards).where(eq(cards.columnId, parent.id)).orderBy(asc(cards.position)),
   },
 };

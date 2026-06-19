@@ -1,5 +1,5 @@
-import { startServer } from "./server.ts";
-import { env } from "../env.ts";
+import { startServer } from './server.ts';
+import { env } from '../env.ts';
 
 const app = await startServer();
 

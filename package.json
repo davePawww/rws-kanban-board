@@ -4,9 +4,25 @@
   "type": "module",
   "scripts": {
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "client/**/*.{ts,tsx,js,jsx}": [
+      "cd client && eslint --fix",
+      "prettier --write"
+    ],
+    "server/**/*.{ts,tsx,js,jsx}": [
+      "cd server && eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,css,html}": [
+      "prettier --write"
+    ]
   },
   "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.1",
     "prettier": "^3.8.4",
     "prettier-plugin-tailwindcss": "^0.8.0"
   }

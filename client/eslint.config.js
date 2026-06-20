@@ -1,5 +1,5 @@
 import storybook from 'eslint-plugin-storybook';
-
+import pluginQuery from '@tanstack/eslint-plugin-query';
 import js from '@eslint/js';
 import globals from 'globals';
 import { defineConfig, globalIgnores } from 'eslint/config';
@@ -68,6 +68,13 @@ export default defineConfig([
       ],
     },
   },
+  {
+    files: ['src/routes/**'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
+  ...pluginQuery.configs['flat/recommended'],
   ...storybook.configs['flat/recommended'],
   eslintConfigPrettier,
 ]);

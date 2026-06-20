@@ -13,7 +13,7 @@
       "prettier --write"
     ],
     "server/**/*.{ts,tsx,js,jsx}": [
-      "pnpm --filter backend exec eslint --fix",
+      "pnpm --filter server exec eslint --fix",
       "prettier --write"
     ],
     "*.{json,md,css,html}": [

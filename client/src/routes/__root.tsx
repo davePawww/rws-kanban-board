@@ -1,7 +1,9 @@
-import { createRootRouteWithContext, Link, Outlet } from '@tanstack/react-router'; // different import
+import { createRootRouteWithContext, Outlet } from '@tanstack/react-router'; // different import
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import type { RouterContext } from '@/types/shared.types';
+import Header from '@/components/layout/header';
+import Footer from '@/components/layout/footer';
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   component: RootLayout,
@@ -10,16 +12,10 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 function RootLayout() {
   return (
     <>
-      <div className="flex gap-2 p-2">
-        <Link to="/" className="[&.active]:font-bold">
-          Home
-        </Link>
-        <Link to="/about" className="[&.active]:font-bold">
-          About
-        </Link>
-      </div>
+      <Header />
       <hr />
       <Outlet />
+      <Footer />
       <ReactQueryDevtools initialIsOpen={false} />
       <TanStackRouterDevtools initialIsOpen={false} />
     </>

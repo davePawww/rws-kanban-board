@@ -30,4 +30,9 @@ export default defineConfig({
   ssr: {
     noExternal: ['@testing-library/jest-dom'],
   },
+  server: {
+    fs: {
+      allow: [path.resolve(__dirname, '..')],
+    },
+  },
 });

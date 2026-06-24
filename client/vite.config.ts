@@ -34,5 +34,8 @@ export default defineConfig({
     fs: {
       allow: [path.resolve(__dirname, '..')],
     },
+    proxy: {
+      '/graphql': 'http://localhost:3000',
+    },
   },
 });

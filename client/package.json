@@ -27,6 +27,7 @@
     "@tanstack/react-router-devtools": "^1.167.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "graphql": "^16.14.2",
     "motion": "^12.40.0",
     "radix-ui": "^1.6.0",
     "react": "^19.2.6",

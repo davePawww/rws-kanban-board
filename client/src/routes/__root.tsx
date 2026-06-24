@@ -12,10 +12,13 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 function RootLayout() {
   return (
     <>
-      <Header />
-      <hr />
-      <Outlet />
-      <Footer />
+      <div className="flex h-dvh flex-col">
+        <Header />
+        <main className="flex-1 overflow-y-auto">
+          <Outlet />
+        </main>
+        <Footer />
+      </div>
       <ReactQueryDevtools initialIsOpen={false} />
       <TanStackRouterDevtools initialIsOpen={false} />
     </>

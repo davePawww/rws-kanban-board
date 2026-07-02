@@ -16,7 +16,7 @@ export default function ThemeToggle() {
       icon={theme === 'light' ? Moon02Icon : Sun02Icon}
       size={20}
       strokeWidth={1.5}
-      className="cursor-pointer"
+      className="cursor-pointer text-white"
       onClick={handleThemeChange}
     />
   );

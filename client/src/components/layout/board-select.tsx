@@ -21,7 +21,7 @@ export default function BoardSelect() {
     <Select defaultValue={data.boards[0]?.id}>
       <SelectTrigger className="border-none text-xs">
         <div className="-space-y-1">
-          <h1 className="text-foreground scroll-m-20 text-base font-semibold tracking-tight">rws-kanban-board</h1>
+          <h1 className="scroll-m-20 text-base font-semibold tracking-tight text-white">rws-kanban-board</h1>
           <SelectValue />
         </div>
       </SelectTrigger>
